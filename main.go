@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"net/http"
+)
 
 func main() {
-	fmt.Println("Hello World!")
+	bookStorage := NewBookStorage()
+	bookService := NewBookService(*bookStorage)
+	bookHandler := NewBookHandler(*bookService)
+
+	http.HandleFunc("/books", bookHandler.CreateBook)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
