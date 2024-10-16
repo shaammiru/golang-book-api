@@ -6,17 +6,17 @@ import (
 )
 
 type BookHandler struct {
-	bookService *BookService
+	bookService BookService
 }
 
-func NewBookHandler(bookStorage BookStorage) *BookHandler {
-	bookService := NewBookService(bookStorage)
+func NewBookHandler(bookService BookService) *BookHandler {
 	return &BookHandler{bookService}
 }
 
 func (bh *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	var book BookSchema
-	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
+	err := json.NewDecoder(r.Body).Decode(&book)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -28,11 +28,5 @@ func (bh *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(createdBook)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(createdBook)
 }
