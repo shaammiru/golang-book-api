@@ -15,7 +15,7 @@ func NewBookStorage() *BookStorage {
 	return &BookStorage{}
 }
 
-func (s *BookStorage) Create(b *BookSchema) error {
+func (s *BookStorage) Create(b *BookSchema) (*BookSchema, error) {
 	books = append(books, b)
-	return nil
+	return b, nil
 }
